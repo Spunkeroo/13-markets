@@ -70,7 +70,7 @@ a{color:#00d4ff;text-decoration:none;}a:hover{color:#33e0ff;text-decoration:unde
 .platform-card .btn:hover{opacity:0.9;text-decoration:none;}
 .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;}
 .blog-card{background:#12121f;border:1px solid #1f1f3a;border-radius:12px;padding:24px;transition:border-color 0.2s;}
-.blog-card:hover{border-color:#00d4ff;}
+.blog-card:hover{border-color:#00d4ff;cursor:pointer;}
 .blog-card h3{color:#fff;font-size:1.05rem;margin-bottom:8px;}
 .blog-card p{color:#888;font-size:0.9rem;margin-bottom:12px;}
 .blog-card .tag{background:#00d4ff22;color:#00d4ff;padding:4px 10px;border-radius:4px;font-size:0.8rem;font-weight:600;}
@@ -160,7 +160,7 @@ footer a{color:#00d4ff;margin:0 8px;}
       <div class="icon">📈</div>
       <h3>Coinbase</h3>
       <p>Buy, sell, and trade 250+ cryptocurrencies. Trusted by 110M+ users worldwide.</p>
-      <a href="https://coinbase.com" class="btn" target="_blank" rel="noopener">Trade Now</a>
+      <a href="https://coinbase.com/join/YAGES3X?src=referral-link" class="btn" target="_blank" rel="noopener">Trade Now</a>
     </div>
     <div class="platform-card">
       <div class="icon">🔮</div>
@@ -172,7 +172,7 @@ footer a{color:#00d4ff;margin:0 8px;}
       <div class="icon">⚡</div>
       <h3>Kalshi</h3>
       <p>CFTC-regulated prediction exchange. Trade event contracts on real-world outcomes.</p>
-      <a href="https://kalshi.com" class="btn" target="_blank" rel="noopener">Start Trading</a>
+      <a href="https://kalshi.com/sign-up/?referral=6b723b42-d0c9-4421-9b4e-5af4b4c6c42c" class="btn" target="_blank" rel="noopener">Start Trading</a>
     </div>
     <div class="platform-card">
       <div class="icon">🎰</div>
@@ -189,22 +189,22 @@ footer a{color:#00d4ff;margin:0 8px;}
   <div class="blog-grid">
     <div class="blog-card">
       <span class="tag">Guide</span>
-      <h3>Prediction Markets 101: How to Bet on Anything</h3>
+      <h3><a href="blog-best-prediction-market-platforms-2026.html" style="color:inherit;text-decoration:none">Prediction Markets 101: How to Bet on Anything</a></h3>
       <p>Complete beginner's guide to prediction markets. How they work, major platforms, and strategies for 2026.</p>
     </div>
     <div class="blog-card">
       <span class="tag">Analysis</span>
-      <h3>Crypto Exchange Comparison: Fees, Features, Security</h3>
+      <h3><a href="blog-ethereum-etf-guide-2026.html" style="color:inherit;text-decoration:none">Crypto Exchange Comparison: Fees, Features, Security</a></h3>
       <p>Side-by-side comparison of Coinbase, Binance, Kraken, and MEXC for traders in 2026.</p>
     </div>
     <div class="blog-card">
       <span class="tag">Strategy</span>
-      <h3>The 13th Signal: Contrarian Trading Strategies</h3>
+      <h3><a href="blog-bitcoin-price-prediction-2026.html" style="color:inherit;text-decoration:none">The 13th Signal: Contrarian Trading Strategies</a></h3>
       <p>How prediction market odds reveal what mainstream analysis misses. Find the edge.</p>
     </div>
     <div class="blog-card">
       <span class="tag">Data</span>
-      <h3>13F Filings Decoded: What Hedge Funds Are Buying</h3>
+      <h3><a href="blog-polymarket-guide-how-to-trade-2026.html" style="color:inherit;text-decoration:none">13F Filings Decoded: What Hedge Funds Are Buying</a></h3>
       <p>Institutional investor moves from the latest SEC Form 13F filings. Follow smart money.</p>
     </div>
   </div>
@@ -257,17 +257,41 @@ footer a{color:#00d4ff;margin:0 8px;}
 </footer>
 
 <script>
-// Live crypto prices from CoinGecko
+// Live crypto prices - dual API with fallback
 async function loadPrices(){
   try{
     const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true');
+    if(!r.ok)throw new Error('CG:'+r.status);
     const d=await r.json();
-    if(d.bitcoin){document.getElementById('btc-price').textContent='$'+d.bitcoin.usd.toLocaleString();const c=d.bitcoin.usd_24h_change;document.getElementById('btc-change').textContent=(c>0?'+':'')+c.toFixed(1)+'%';document.getElementById('btc-change').className='change '+(c>0?'up':'down');}
-    if(d.ethereum){document.getElementById('eth-price').textContent='$'+d.ethereum.usd.toLocaleString();const c=d.ethereum.usd_24h_change;document.getElementById('eth-change').textContent=(c>0?'+':'')+c.toFixed(1)+'%';document.getElementById('eth-change').className='change '+(c>0?'up':'down');}
-    if(d.solana){document.getElementById('sol-price').textContent='$'+d.solana.usd.toLocaleString();const c=d.solana.usd_24h_change;document.getElementById('sol-change').textContent=(c>0?'+':'')+c.toFixed(1)+'%';document.getElementById('sol-change').className='change '+(c>0?'up':'down');}
-  }catch(e){console.log('Price fetch failed');}
+    function upd(coin,id,dec){
+      if(!d[coin])return;
+      const p=d[coin].usd,ch=d[coin].usd_24h_change||0;
+      const el=document.getElementById(id+'-price');
+      const cel=document.getElementById(id+'-change');
+      if(el)el.textContent='$'+p.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec});
+      if(cel){cel.textContent=(ch>0?'+':'')+ch.toFixed(1)+'%';cel.className='change '+(ch>=0?'up':'down');}
+    }
+    upd('bitcoin','btc',0);upd('ethereum','eth',2);upd('solana','sol',2);
+  }catch(e){
+    // Fallback: try CoinCap API
+    try{
+      const r2=await fetch('https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana');
+      if(!r2.ok)throw new Error('CC:'+r2.status);
+      const d2=await r2.json();
+      d2.data.forEach(function(coin){
+        const map={bitcoin:'btc',ethereum:'eth',solana:'sol'};
+        const id=map[coin.id];if(!id)return;
+        const p=parseFloat(coin.priceUsd),ch=parseFloat(coin.changePercent24Hr)||0;
+        const dec=id==='btc'?0:2;
+        const el=document.getElementById(id+'-price');
+        const cel=document.getElementById(id+'-change');
+        if(el)el.textContent='$'+p.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec});
+        if(cel){cel.textContent=(ch>0?'+':'')+ch.toFixed(1)+'%';cel.className='change '+(ch>=0?'up':'down');}
+      });
+    }catch(e2){console.log('Prices: retrying...');}
+  }
 }
-loadPrices();setInterval(loadPrices,60000);
+loadPrices();setInterval(loadPrices,30000);
 </script>
 <script src="https://spunk.codes/cross-promo.js" defer></script>
 </body>
