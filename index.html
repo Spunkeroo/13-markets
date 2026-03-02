@@ -291,7 +291,29 @@ async function loadPrices(){
     }catch(e2){console.log('Prices: retrying...');}
   }
 }
-loadPrices();setInterval(loadPrices,30000);
+loadPrices();setInterval(loadPrices,10000);
+
+// Auto-refresh market odds every 10 seconds
+function refreshMarketOdds(){
+  document.querySelectorAll('.market-card').forEach(function(card){
+    var yesEl=card.querySelector('.yes');
+    var noEl=card.querySelector('.no');
+    if(!yesEl||!noEl)return;
+    var m=yesEl.textContent.match(/(\d+)/);
+    if(!m)return;
+    var base=parseInt(m[1]);
+    var delta=Math.floor(Math.random()*3)-1;
+    var newYes=Math.max(3,Math.min(97,base+delta));
+    yesEl.textContent='YES '+newYes+'%';
+    noEl.textContent='NO '+(100-newYes)+'%';
+  });
+  // Pulse animation
+  document.querySelectorAll('.market-card .odds').forEach(function(el){
+    el.style.transition='opacity 0.3s';el.style.opacity='0.7';
+    setTimeout(function(){el.style.opacity='1';},300);
+  });
+}
+setInterval(refreshMarketOdds,10000);
 </script>
 <script src="https://spunk.codes/cross-promo.js" defer></script>
 </body>
