@@ -44,13 +44,21 @@ a{color:#00d4ff;text-decoration:none;}a:hover{color:#33e0ff;text-decoration:unde
 .section{max-width:1100px;margin:0 auto;padding:60px 24px;}
 .section-title{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:8px;}
 .section-sub{color:#888;margin-bottom:32px;}
-.ticker{background:#0d0d14;border-top:1px solid #1a1a2f;border-bottom:1px solid #1a1a2f;padding:12px 0;display:flex;gap:32px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;animation:scroll-ticker 60s linear infinite;}.ticker::-webkit-scrollbar{display:none;}.ticker:hover{animation-play-state:paused;}@keyframes scroll-ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.ticker-item{text-align:center;}
-.ticker-item .symbol{font-weight:700;color:#fff;font-size:0.95rem;}
-.ticker-item .price{color:#00d4ff;font-size:1.1rem;font-weight:600;}
-.ticker-item .change{font-size:0.85rem;}
+.ticker-wrap{overflow:hidden;background:#0d0d14;border-top:1px solid #1a1a2f;border-bottom:1px solid #1a1a2f;position:relative;}
+.ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none;}
+.ticker-wrap::before{left:0;background:linear-gradient(90deg,#0d0d14,transparent);}
+.ticker-wrap::after{right:0;background:linear-gradient(270deg,#0d0d14,transparent);}
+.ticker-track{display:flex;width:max-content;animation:ticker-scroll 80s linear infinite;padding:10px 0;}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.ticker-item{display:flex;align-items:center;gap:6px;padding:0 20px;white-space:nowrap;border-right:1px solid #1a1a2f;}
+.ticker-item .symbol{font-weight:700;color:#fff;font-size:0.85rem;}
+.ticker-item .price{color:#00d4ff;font-size:0.95rem;font-weight:600;}
+.ticker-item .change{font-size:0.8rem;font-weight:600;}
 .ticker-item .change.up{color:#22c55e;}
 .ticker-item .change.down{color:#ef4444;}
+.live-dot{color:#22c55e;font-size:0.7rem;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 .markets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;}
 .market-card{background:#12121f;border:1px solid #1f1f3a;border-radius:12px;padding:24px;transition:border-color 0.2s,transform 0.2s;}
 .market-card:hover{border-color:#00d4ff;transform:translateY(-2px);}
@@ -100,30 +108,31 @@ footer a{color:#00d4ff;margin:0 8px;}
   </div>
 </nav>
 
-<div style="overflow:hidden;background:#0d0d14;border-top:1px solid #1a1a2f;border-bottom:1px solid #1a1a2f;">
-<div class="ticker" id="ticker">
-  <div class="ticker-item"><div class="symbol">BTC</div><div class="price" id="btc-price">--</div><div class="change up" id="btc-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">ETH</div><div class="price" id="eth-price">--</div><div class="change up" id="eth-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">SOL</div><div class="price" id="sol-price">--</div><div class="change up" id="sol-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">XRP</div><div class="price" id="xrp-price">--</div><div class="change up" id="xrp-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">DOGE</div><div class="price" id="doge-price">--</div><div class="change up" id="doge-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">ADA</div><div class="price" id="ada-price">--</div><div class="change up" id="ada-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">AVAX</div><div class="price" id="avax-price">--</div><div class="change up" id="avax-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">LINK</div><div class="price" id="link-price">--</div><div class="change up" id="link-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">DOT</div><div class="price" id="dot-price">--</div><div class="change up" id="dot-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">MATIC</div><div class="price" id="matic-price">--</div><div class="change up" id="matic-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">UNI</div><div class="price" id="uni-price">--</div><div class="change up" id="uni-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">ATOM</div><div class="price" id="atom-price">--</div><div class="change up" id="atom-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">NEAR</div><div class="price" id="near-price">--</div><div class="change up" id="near-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">APT</div><div class="price" id="apt-price">--</div><div class="change up" id="apt-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">ARB</div><div class="price" id="arb-price">--</div><div class="change up" id="arb-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">OP</div><div class="price" id="op-price">--</div><div class="change up" id="op-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">SUI</div><div class="price" id="sui-price">--</div><div class="change up" id="sui-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">RENDER</div><div class="price" id="render-price">--</div><div class="change up" id="render-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">INJ</div><div class="price" id="inj-price">--</div><div class="change up" id="inj-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">FET</div><div class="price" id="fet-price">--</div><div class="change up" id="fet-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">Gold</div><div class="price" id="gold-price">--</div><div class="change up" id="gold-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">S&P 500</div><div class="price" id="sp500-price">--</div><div class="change up" id="sp500-change">--</div></div>
+<div class="ticker-wrap">
+<div class="ticker-track" id="ticker-track">
+  <div class="ticker-item"><span class="live-dot">&#9679; LIVE</span></div>
+  <div class="ticker-item"><span class="symbol">BTC</span><span class="price" data-p="btc">--</span><span class="change up" data-c="btc">--</span></div>
+  <div class="ticker-item"><span class="symbol">ETH</span><span class="price" data-p="eth">--</span><span class="change up" data-c="eth">--</span></div>
+  <div class="ticker-item"><span class="symbol">BNB</span><span class="price" data-p="bnb">--</span><span class="change up" data-c="bnb">--</span></div>
+  <div class="ticker-item"><span class="symbol">SOL</span><span class="price" data-p="sol">--</span><span class="change up" data-c="sol">--</span></div>
+  <div class="ticker-item"><span class="symbol">XRP</span><span class="price" data-p="xrp">--</span><span class="change up" data-c="xrp">--</span></div>
+  <div class="ticker-item"><span class="symbol">DOGE</span><span class="price" data-p="doge">--</span><span class="change up" data-c="doge">--</span></div>
+  <div class="ticker-item"><span class="symbol">ADA</span><span class="price" data-p="ada">--</span><span class="change up" data-c="ada">--</span></div>
+  <div class="ticker-item"><span class="symbol">AVAX</span><span class="price" data-p="avax">--</span><span class="change up" data-c="avax">--</span></div>
+  <div class="ticker-item"><span class="symbol">TRX</span><span class="price" data-p="trx">--</span><span class="change up" data-c="trx">--</span></div>
+  <div class="ticker-item"><span class="symbol">TON</span><span class="price" data-p="ton">--</span><span class="change up" data-c="ton">--</span></div>
+  <div class="ticker-item"><span class="symbol">LINK</span><span class="price" data-p="link">--</span><span class="change up" data-c="link">--</span></div>
+  <div class="ticker-item"><span class="symbol">DOT</span><span class="price" data-p="dot">--</span><span class="change up" data-c="dot">--</span></div>
+  <div class="ticker-item"><span class="symbol">UNI</span><span class="price" data-p="uni">--</span><span class="change up" data-c="uni">--</span></div>
+  <div class="ticker-item"><span class="symbol">ATOM</span><span class="price" data-p="atom">--</span><span class="change up" data-c="atom">--</span></div>
+  <div class="ticker-item"><span class="symbol">NEAR</span><span class="price" data-p="near">--</span><span class="change up" data-c="near">--</span></div>
+  <div class="ticker-item"><span class="symbol">LTC</span><span class="price" data-p="ltc">--</span><span class="change up" data-c="ltc">--</span></div>
+  <div class="ticker-item"><span class="symbol">SUI</span><span class="price" data-p="sui">--</span><span class="change up" data-c="sui">--</span></div>
+  <div class="ticker-item"><span class="symbol">APT</span><span class="price" data-p="apt">--</span><span class="change up" data-c="apt">--</span></div>
+  <div class="ticker-item"><span class="symbol">ARB</span><span class="price" data-p="arb">--</span><span class="change up" data-c="arb">--</span></div>
+  <div class="ticker-item"><span class="symbol">OP</span><span class="price" data-p="op">--</span><span class="change up" data-c="op">--</span></div>
+  <div class="ticker-item"><span class="symbol">INJ</span><span class="price" data-p="inj">--</span><span class="change up" data-c="inj">--</span></div>
+  <div class="ticker-item"><span class="symbol">GOLD</span><span class="price" data-p="gold">--</span><span class="change up" data-c="gold">--</span></div>
 </div>
 </div>
 
@@ -288,207 +297,112 @@ footer a{color:#00d4ff;margin:0 8px;}
 </footer>
 
 <script>
-// ===== LIVE PRICE ENGINE — All tickers, 10s refresh, never blank =====
-var cache={};
+// ===== 13.MARKETS LIVE TICKER — 22 assets, 4 API fallbacks, 10s refresh =====
+// Uses data-p and data-c attributes so both original + duplicate scroll copies update
 
-function setP(id,price,change,dec){
-  var el=document.getElementById(id+'-price');
-  var cel=document.getElementById(id+'-change');
-  if(!el)return;
-  if(price!=null){
-    el.textContent='$'+price.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec});
-    el.style.transition='color 0.3s';el.style.color='#00d4ff';
-    setTimeout(function(){el.style.color='';},500);
-  }
-  if(cel&&change!=null){
-    cel.textContent=(change>0?'+':'')+change.toFixed(1)+'%';
-    cel.className='change '+(change>=0?'up':'down');
-  }
-  cache[id]={p:price,ch:change,dec:dec};
+// Smart price formatter — auto-picks decimals based on magnitude
+function fmt(p){
+  if(p>=100)return '$'+p.toLocaleString(undefined,{maximumFractionDigits:0});
+  if(p>=1)return '$'+p.toFixed(2);
+  if(p>=0.01)return '$'+p.toFixed(4);
+  return '$'+p.toFixed(6);
 }
 
-// === CRYPTO: CoinGecko (all 20 coins in one call) ===
-var cgMap={
-  bitcoin:['btc',0],ethereum:['eth',0],solana:['sol',2],ripple:['xrp',4],
-  dogecoin:['doge',4],cardano:['ada',4],avalanche:['avax',2],chainlink:['link',2],
-  polkadot:['dot',2],'matic-network':['matic',4],uniswap:['uni',2],cosmos:['atom',2],
-  'near-protocol':['near',2],aptos:['apt',2],arbitrum:['arb',4],optimism:['op',4],
-  sui:['sui',4],'render-token':['render',2],'injective-protocol':['inj',2],
-  'fetch-ai':['fet',4],'pax-gold':['gold',0]
-};
-var cgIds=Object.keys(cgMap).join(',');
-
-async function loadCoinGecko(){
-  var r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+cgIds+'&vs_currencies=usd&include_24hr_change=true');
-  if(!r.ok)throw new Error('CG:'+r.status);
-  var d=await r.json();
-  for(var coin in cgMap){
-    if(!d[coin])continue;
-    var m=cgMap[coin];
-    setP(m[0],d[coin].usd,d[coin].usd_24h_change||0,m[1]);
-  }
-}
-
-// === CRYPTO FALLBACK 1: CoinCap ===
-var ccMap={
-  bitcoin:['btc',0],ethereum:['eth',0],solana:['sol',2],xrp:['xrp',4],
-  dogecoin:['doge',4],cardano:['ada',4],avalanche:['avax',2],chainlink:['link',2],
-  polkadot:['dot',2],polygon:['matic',4],uniswap:['uni',2],cosmos:['atom',2],
-  near:['near',2],aptos:['apt',2],arbitrum:['arb',4],optimism:['op',4],
-  sui:['sui',4],render:['render',2],injective:['inj',2],'fetch-ai':['fet',4]
-};
-var ccIds=Object.keys(ccMap).join(',');
-
-async function loadCoinCap(){
-  var r=await fetch('https://api.coincap.io/v2/assets?ids='+ccIds);
-  if(!r.ok)throw new Error('CC:'+r.status);
-  var d=await r.json();
-  (d.data||[]).forEach(function(c){
-    var m=ccMap[c.id];if(!m)return;
-    setP(m[0],parseFloat(c.priceUsd),parseFloat(c.changePercent24Hr)||0,m[1]);
+// Update ALL matching elements (original + scrolling duplicate)
+function upd(ticker,price,change){
+  document.querySelectorAll('[data-p="'+ticker+'"]').forEach(function(el){
+    if(price==null)return;
+    el.textContent=fmt(price);
+  });
+  document.querySelectorAll('[data-c="'+ticker+'"]').forEach(function(el){
+    if(change==null)return;
+    el.textContent=(change>0?'+':'')+change.toFixed(1)+'%';
+    el.className='change '+(change>=0?'up':'down');
   });
 }
 
-// === CRYPTO FALLBACK 2: Binance ===
-var bnMap={
-  BTCUSDT:['btc',0],ETHUSDT:['eth',0],SOLUSDT:['sol',2],XRPUSDT:['xrp',4],
-  DOGEUSDT:['doge',4],ADAUSDT:['ada',4],AVAXUSDT:['avax',2],LINKUSDT:['link',2],
-  DOTUSDT:['dot',2],MATICUSDT:['matic',4],UNIUSDT:['uni',2],ATOMUSDT:['atom',2],
-  NEARUSDT:['near',2],APTUSDT:['apt',2],ARBUSDT:['arb',4],OPUSDT:['op',4],
-  SUIUSDT:['sui',4],RENDERUSDT:['render',2],INJUSDT:['inj',2],FETUSDT:['fet',4],
-  PAXGUSDT:['gold',0]
+// ========== API 1: BINANCE (primary — fastest, no CORS issues, no key) ==========
+var bnPairs={
+  BTCUSDT:'btc',ETHUSDT:'eth',BNBUSDT:'bnb',SOLUSDT:'sol',XRPUSDT:'xrp',
+  DOGEUSDT:'doge',ADAUSDT:'ada',AVAXUSDT:'avax',TRXUSDT:'trx',TONUSDT:'ton',
+  LINKUSDT:'link',DOTUSDT:'dot',UNIUSDT:'uni',ATOMUSDT:'atom',NEARUSDT:'near',
+  LTCUSDT:'ltc',SUIUSDT:'sui',APTUSDT:'apt',ARBUSDT:'arb',OPUSDT:'op',
+  INJUSDT:'inj',PAXGUSDT:'gold'
 };
-
-async function loadBinance(){
-  var syms=JSON.stringify(Object.keys(bnMap));
+async function apiBinance(){
+  var syms=JSON.stringify(Object.keys(bnPairs));
   var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols='+syms);
   if(!r.ok)throw new Error('BN:'+r.status);
   var d=await r.json();
-  d.forEach(function(t){
-    var m=bnMap[t.symbol];if(!m)return;
-    setP(m[0],parseFloat(t.lastPrice),parseFloat(t.priceChangePercent)||0,m[1]);
-  });
+  d.forEach(function(t){var id=bnPairs[t.symbol];if(id)upd(id,parseFloat(t.lastPrice),parseFloat(t.priceChangePercent));});
 }
 
-// === CRYPTO FALLBACK 3: CryptoCompare ===
-async function loadCryptoCompare(){
-  var syms='BTC,ETH,SOL,XRP,DOGE,ADA,AVAX,LINK,DOT,MATIC,UNI,ATOM,NEAR,APT,ARB,OP,SUI,RNDR,INJ,FET,PAXG';
-  var idMap={BTC:['btc',0],ETH:['eth',0],SOL:['sol',2],XRP:['xrp',4],DOGE:['doge',4],ADA:['ada',4],AVAX:['avax',2],LINK:['link',2],DOT:['dot',2],MATIC:['matic',4],UNI:['uni',2],ATOM:['atom',2],NEAR:['near',2],APT:['apt',2],ARB:['arb',4],OP:['op',4],SUI:['sui',4],RNDR:['render',2],INJ:['inj',2],FET:['fet',4],PAXG:['gold',0]};
-  var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
-  if(!r.ok)throw new Error('CC2:'+r.status);
-  var d=await r.json();var raw=d.RAW||{};
-  for(var s in idMap){
-    if(!raw[s]||!raw[s].USD)continue;
-    var m=idMap[s];
-    setP(m[0],raw[s].USD.PRICE,raw[s].USD.CHANGEPCT24HOUR||0,m[1]);
-  }
+// ========== API 2: COINGECKO (fallback 1) ==========
+var cgIds='bitcoin,ethereum,binancecoin,solana,ripple,dogecoin,cardano,avalanche-2,tron,the-open-network,chainlink,polkadot,uniswap,cosmos,near,litecoin,sui,aptos,arbitrum,optimism,injective-protocol,pax-gold';
+var cgMap={bitcoin:'btc',ethereum:'eth',binancecoin:'bnb',solana:'sol',ripple:'xrp',dogecoin:'doge',cardano:'ada','avalanche-2':'avax',tron:'trx','the-open-network':'ton',chainlink:'link',polkadot:'dot',uniswap:'uni',cosmos:'atom',near:'near',litecoin:'ltc',sui:'sui',aptos:'apt',arbitrum:'arb',optimism:'op','injective-protocol':'inj','pax-gold':'gold'};
+async function apiCoinGecko(){
+  var r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+cgIds+'&vs_currencies=usd&include_24hr_change=true');
+  if(!r.ok)throw new Error('CG:'+r.status);
+  var d=await r.json();
+  for(var coin in cgMap){if(d[coin])upd(cgMap[coin],d[coin].usd,d[coin].usd_24h_change);}
 }
 
-// === MASTER CRYPTO LOADER — cascading fallback ===
-async function loadAllCrypto(){
-  var apis=[loadCoinGecko,loadCoinCap,loadBinance,loadCryptoCompare];
+// ========== API 3: COINCAP (fallback 2) ==========
+var ccIds='bitcoin,ethereum,binance-coin,solana,xrp,dogecoin,cardano,avalanche,tron,toncoin,chainlink,polkadot,uniswap,cosmos,near-protocol,litecoin,sui,aptos,arbitrum,optimism,injective-protocol';
+var ccMap={bitcoin:'btc',ethereum:'eth','binance-coin':'bnb',solana:'sol',xrp:'xrp',dogecoin:'doge',cardano:'ada',avalanche:'avax',tron:'trx',toncoin:'ton',chainlink:'link',polkadot:'dot',uniswap:'uni',cosmos:'atom','near-protocol':'near',litecoin:'ltc',sui:'sui',aptos:'apt',arbitrum:'arb',optimism:'op','injective-protocol':'inj'};
+async function apiCoinCap(){
+  var r=await fetch('https://api.coincap.io/v2/assets?ids='+ccIds);
+  if(!r.ok)throw new Error('CC:'+r.status);
+  var d=await r.json();
+  (d.data||[]).forEach(function(c){var id=ccMap[c.id];if(id)upd(id,parseFloat(c.priceUsd),parseFloat(c.changePercent24Hr));});
+}
+
+// ========== API 4: CRYPTOCOMPARE (fallback 3) ==========
+var ccpSyms='BTC,ETH,BNB,SOL,XRP,DOGE,ADA,AVAX,TRX,TON,LINK,DOT,UNI,ATOM,NEAR,LTC,SUI,APT,ARB,OP,INJ,PAXG';
+var ccpMap={BTC:'btc',ETH:'eth',BNB:'bnb',SOL:'sol',XRP:'xrp',DOGE:'doge',ADA:'ada',AVAX:'avax',TRX:'trx',TON:'ton',LINK:'link',DOT:'dot',UNI:'uni',ATOM:'atom',NEAR:'near',LTC:'ltc',SUI:'sui',APT:'apt',ARB:'arb',OP:'op',INJ:'inj',PAXG:'gold'};
+async function apiCryptoCompare(){
+  var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+ccpSyms+'&tsyms=USD');
+  if(!r.ok)throw new Error('CCP:'+r.status);
+  var d=await r.json(),raw=d.RAW||{};
+  for(var s in ccpMap){if(raw[s]&&raw[s].USD)upd(ccpMap[s],raw[s].USD.PRICE,raw[s].USD.CHANGEPCT24HOUR);}
+}
+
+// ========== MASTER LOADER — cascading fallback ==========
+async function loadPrices(){
+  var apis=[apiBinance,apiCoinGecko,apiCoinCap,apiCryptoCompare];
   for(var i=0;i<apis.length;i++){
-    try{await apis[i]();return;}catch(e){console.log('Crypto API '+(i+1)+':',e.message);}
-  }
-  // All failed — show cached
-  for(var id in cache){if(cache[id])setP(id,cache[id].p,cache[id].ch,cache[id].dec);}
-}
-
-// === S&P 500: via allorigins CORS proxy to Yahoo Finance ===
-async function loadSP500(){
-  var loaded=false;
-  // Method 1: allorigins proxy → Yahoo Finance
-  try{
-    var yUrl='https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d';
-    var r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(yUrl));
-    if(!r.ok)throw new Error(r.status);
-    var d=await r.json();
-    var meta=d.chart.result[0].meta;
-    var price=meta.regularMarketPrice;
-    var prev=meta.chartPreviousClose||meta.previousClose;
-    var ch=prev?((price-prev)/prev*100):0;
-    setP('sp500',price,ch,0);loaded=true;
-  }catch(e){console.log('SP500 allorigins:',e.message);}
-  // Method 2: corsproxy.io
-  if(!loaded){
-    try{
-      var r2=await fetch('https://corsproxy.io/?'+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d'));
-      if(!r2.ok)throw new Error(r2.status);
-      var d2=await r2.json();
-      var meta2=d2.chart.result[0].meta;
-      var price2=meta2.regularMarketPrice;
-      var prev2=meta2.chartPreviousClose||meta2.previousClose;
-      var ch2=prev2?((price2-prev2)/prev2*100):0;
-      setP('sp500',price2,ch2,0);loaded=true;
-    }catch(e2){console.log('SP500 corsproxy:',e2.message);}
-  }
-  // Method 3: thingproxy
-  if(!loaded){
-    try{
-      var r3=await fetch('https://thingproxy.freeboard.io/fetch/https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d');
-      if(!r3.ok)throw new Error(r3.status);
-      var d3=await r3.json();
-      var meta3=d3.chart.result[0].meta;
-      var price3=meta3.regularMarketPrice;
-      var prev3=meta3.chartPreviousClose||meta3.previousClose;
-      var ch3=prev3?((price3-prev3)/prev3*100):0;
-      setP('sp500',price3,ch3,0);loaded=true;
-    }catch(e3){console.log('SP500 thingproxy:',e3.message);}
-  }
-  // Final fallback — show cached or recent static
-  if(!loaded){
-    if(cache.sp500)setP('sp500',cache.sp500.p,cache.sp500.ch,0);
-    else{var el=document.getElementById('sp500-price');if(el&&el.textContent==='--')el.textContent='$5,842';}
+    try{await apis[i]();console.log('Prices loaded via API '+(i+1));return;}
+    catch(e){console.log('API '+(i+1)+' failed:',e.message);}
   }
 }
 
-// === Market odds micro-fluctuation ===
-function refreshMarketOdds(){
+// ========== MARKET ODDS ==========
+function refreshOdds(){
   document.querySelectorAll('.market-card').forEach(function(card){
-    var yesEl=card.querySelector('.yes'),noEl=card.querySelector('.no');
-    if(!yesEl||!noEl)return;
-    var m=yesEl.textContent.match(/(\d+)/);if(!m)return;
-    var base=parseInt(m[1]),rand=Math.random();
-    var delta=rand<0.15?1:(rand>0.85?-1:0);
-    var newYes=Math.max(3,Math.min(97,base+delta));
-    if(newYes!==base){
-      yesEl.textContent='YES '+newYes+'%';noEl.textContent='NO '+(100-newYes)+'%';
-      var color=delta>0?'#22c55e':'#ef4444';
-      yesEl.style.boxShadow='0 0 8px '+color;noEl.style.boxShadow='0 0 8px '+color;
-      setTimeout(function(){yesEl.style.boxShadow='none';noEl.style.boxShadow='none';},600);
-    }
+    var y=card.querySelector('.yes'),n=card.querySelector('.no');
+    if(!y||!n)return;
+    var m=y.textContent.match(/(\d+)/);if(!m)return;
+    var b=parseInt(m[1]),r=Math.random(),d=r<0.15?1:(r>0.85?-1:0);
+    var v=Math.max(3,Math.min(97,b+d));
+    if(v!==b){y.textContent='YES '+v+'%';n.textContent='NO '+(100-v)+'%';}
   });
 }
-function refreshVolumes(){
+function refreshVol(){
   document.querySelectorAll('.market-card .volume').forEach(function(el){
     var m=el.textContent.match(/([\d.]+)M/);if(!m)return;
-    var v=parseFloat(m[1]),d=(Math.random()*0.2-0.05);
-    el.textContent='$'+Math.max(0.5,v+d).toFixed(1)+'M';
+    el.textContent='$'+Math.max(0.5,parseFloat(m[1])+(Math.random()*0.2-0.05)).toFixed(1)+'M';
   });
 }
 
-// === DUPLICATE TICKER FOR SEAMLESS SCROLL ===
-var tickerEl=document.getElementById('ticker');
-if(tickerEl){
-  tickerEl.innerHTML+=tickerEl.innerHTML;
-  // Add LIVE dot
-  var dot=document.createElement('div');
-  dot.className='ticker-item';
-  dot.innerHTML='<div class="symbol" style="color:#22c55e;font-size:0.8rem;">&#9679; LIVE</div>';
-  dot.style.animation='pulse 2s infinite';
-  tickerEl.appendChild(dot);
-  var sty=document.createElement('style');
-  sty.textContent='@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}';
-  document.head.appendChild(sty);
-}
+// ========== DUPLICATE TICKER FOR SEAMLESS SCROLL ==========
+var track=document.getElementById('ticker-track');
+if(track)track.innerHTML+=track.innerHTML;
 
-// === START EVERYTHING ===
-loadAllCrypto();
-loadSP500();
-setInterval(loadAllCrypto,10000);
-setInterval(loadSP500,60000);
-setInterval(refreshMarketOdds,10000);
-setInterval(refreshVolumes,15000);
+// ========== START ==========
+loadPrices();
+setInterval(loadPrices,10000);
+setInterval(refreshOdds,10000);
+setInterval(refreshVol,15000);
 </script>
 <script src="https://spunk.codes/cross-promo.js" defer></script>
 </body>
