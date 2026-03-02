@@ -44,7 +44,7 @@ a{color:#00d4ff;text-decoration:none;}a:hover{color:#33e0ff;text-decoration:unde
 .section{max-width:1100px;margin:0 auto;padding:60px 24px;}
 .section-title{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:8px;}
 .section-sub{color:#888;margin-bottom:32px;}
-.ticker{background:#0d0d14;border-top:1px solid #1a1a2f;border-bottom:1px solid #1a1a2f;padding:16px 24px;display:flex;justify-content:center;gap:40px;flex-wrap:wrap;}
+.ticker{background:#0d0d14;border-top:1px solid #1a1a2f;border-bottom:1px solid #1a1a2f;padding:12px 0;display:flex;gap:32px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;animation:scroll-ticker 60s linear infinite;}.ticker::-webkit-scrollbar{display:none;}.ticker:hover{animation-play-state:paused;}@keyframes scroll-ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 .ticker-item{text-align:center;}
 .ticker-item .symbol{font-weight:700;color:#fff;font-size:0.95rem;}
 .ticker-item .price{color:#00d4ff;font-size:1.1rem;font-weight:600;}
@@ -100,12 +100,31 @@ footer a{color:#00d4ff;margin:0 8px;}
   </div>
 </nav>
 
+<div style="overflow:hidden;background:#0d0d14;border-top:1px solid #1a1a2f;border-bottom:1px solid #1a1a2f;">
 <div class="ticker" id="ticker">
   <div class="ticker-item"><div class="symbol">BTC</div><div class="price" id="btc-price">--</div><div class="change up" id="btc-change">--</div></div>
   <div class="ticker-item"><div class="symbol">ETH</div><div class="price" id="eth-price">--</div><div class="change up" id="eth-change">--</div></div>
   <div class="ticker-item"><div class="symbol">SOL</div><div class="price" id="sol-price">--</div><div class="change up" id="sol-change">--</div></div>
-  <div class="ticker-item"><div class="symbol">S&P 500</div><div class="price" id="sp500-price">--</div><div class="change up" id="sp500-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">XRP</div><div class="price" id="xrp-price">--</div><div class="change up" id="xrp-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">DOGE</div><div class="price" id="doge-price">--</div><div class="change up" id="doge-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">ADA</div><div class="price" id="ada-price">--</div><div class="change up" id="ada-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">AVAX</div><div class="price" id="avax-price">--</div><div class="change up" id="avax-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">LINK</div><div class="price" id="link-price">--</div><div class="change up" id="link-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">DOT</div><div class="price" id="dot-price">--</div><div class="change up" id="dot-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">MATIC</div><div class="price" id="matic-price">--</div><div class="change up" id="matic-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">UNI</div><div class="price" id="uni-price">--</div><div class="change up" id="uni-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">ATOM</div><div class="price" id="atom-price">--</div><div class="change up" id="atom-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">NEAR</div><div class="price" id="near-price">--</div><div class="change up" id="near-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">APT</div><div class="price" id="apt-price">--</div><div class="change up" id="apt-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">ARB</div><div class="price" id="arb-price">--</div><div class="change up" id="arb-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">OP</div><div class="price" id="op-price">--</div><div class="change up" id="op-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">SUI</div><div class="price" id="sui-price">--</div><div class="change up" id="sui-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">RENDER</div><div class="price" id="render-price">--</div><div class="change up" id="render-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">INJ</div><div class="price" id="inj-price">--</div><div class="change up" id="inj-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">FET</div><div class="price" id="fet-price">--</div><div class="change up" id="fet-change">--</div></div>
   <div class="ticker-item"><div class="symbol">Gold</div><div class="price" id="gold-price">--</div><div class="change up" id="gold-change">--</div></div>
+  <div class="ticker-item"><div class="symbol">S&P 500</div><div class="price" id="sp500-price">--</div><div class="change up" id="sp500-change">--</div></div>
+</div>
 </div>
 
 <section class="hero">
@@ -269,187 +288,207 @@ footer a{color:#00d4ff;margin:0 8px;}
 </footer>
 
 <script>
-// ===== LIVE PRICE ENGINE — 4-API fallback chain, never shows "Loading..." =====
-var lastPrices={btc:null,eth:null,sol:null};
-var priceSource='';
+// ===== LIVE PRICE ENGINE — All tickers, 10s refresh, never blank =====
+var cache={};
 
-function setPrice(id,price,change,dec){
+function setP(id,price,change,dec){
   var el=document.getElementById(id+'-price');
   var cel=document.getElementById(id+'-change');
-  if(el&&price)el.textContent='$'+price.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec});
-  if(cel&&change!==null&&change!==undefined){cel.textContent=(change>0?'+':'')+change.toFixed(1)+'%';cel.className='change '+(change>=0?'up':'down');}
-}
-
-// API 1: CoinCap (most reliable free, no key needed)
-async function tryCoinCap(){
-  var r=await fetch('https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana');
-  if(!r.ok)throw new Error(r.status);
-  var d=await r.json();
-  var map={bitcoin:{id:'btc',dec:0},ethereum:{id:'eth',dec:2},solana:{id:'sol',dec:2}};
-  d.data.forEach(function(c){
-    var m=map[c.id];if(!m)return;
-    var p=parseFloat(c.priceUsd),ch=parseFloat(c.changePercent24Hr)||0;
-    lastPrices[m.id]={p:p,ch:ch,dec:m.dec};
-    setPrice(m.id,p,ch,m.dec);
-  });
-  priceSource='coincap';
-}
-
-// API 2: CoinGecko (rate-limited but good data)
-async function tryCoinGecko(){
-  var r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true');
-  if(!r.ok)throw new Error(r.status);
-  var d=await r.json();
-  var coins=[['bitcoin','btc',0],['ethereum','eth',2],['solana','sol',2]];
-  coins.forEach(function(c){
-    if(!d[c[0]])return;
-    var p=d[c[0]].usd,ch=d[c[0]].usd_24h_change||0;
-    lastPrices[c[1]]={p:p,ch:ch,dec:c[2]};
-    setPrice(c[1],p,ch,c[2]);
-  });
-  priceSource='coingecko';
-}
-
-// API 3: Binance public ticker (no auth needed)
-async function tryBinance(){
-  var symbols=['BTCUSDT','ETHUSDT','SOLUSDT'];
-  var ids=['btc','eth','sol'];
-  var decs=[0,2,2];
-  var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols='+JSON.stringify(symbols));
-  if(!r.ok)throw new Error(r.status);
-  var d=await r.json();
-  d.forEach(function(t,i){
-    var p=parseFloat(t.lastPrice),ch=parseFloat(t.priceChangePercent)||0;
-    lastPrices[ids[i]]={p:p,ch:ch,dec:decs[i]};
-    setPrice(ids[i],p,ch,decs[i]);
-  });
-  priceSource='binance';
-}
-
-// API 4: CryptoCompare (another fallback)
-async function tryCryptoCompare(){
-  var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,SOL&tsyms=USD');
-  if(!r.ok)throw new Error(r.status);
-  var d=await r.json();
-  var raw=d.RAW||{};
-  var coins=[['BTC','btc',0],['ETH','eth',2],['SOL','sol',2]];
-  coins.forEach(function(c){
-    if(!raw[c[0]]||!raw[c[0]].USD)return;
-    var p=raw[c[0]].USD.PRICE,ch=raw[c[0]].USD.CHANGEPCT24HOUR||0;
-    lastPrices[c[1]]={p:p,ch:ch,dec:c[2]};
-    setPrice(c[1],p,ch,c[2]);
-  });
-  priceSource='cryptocompare';
-}
-
-// Master loader with cascading fallback
-async function loadCryptoPrices(){
-  var apis=[tryCoinCap,tryCoinGecko,tryBinance,tryCryptoCompare];
-  for(var i=0;i<apis.length;i++){
-    try{await apis[i]();return;}catch(e){console.log('API '+(i+1)+' failed:',e.message);}
+  if(!el)return;
+  if(price!=null){
+    el.textContent='$'+price.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec});
+    el.style.transition='color 0.3s';el.style.color='#00d4ff';
+    setTimeout(function(){el.style.color='';},500);
   }
-  // All APIs failed — show last known prices if available
-  ['btc','eth','sol'].forEach(function(id){
-    if(lastPrices[id])setPrice(id,lastPrices[id].p,lastPrices[id].ch,lastPrices[id].dec);
+  if(cel&&change!=null){
+    cel.textContent=(change>0?'+':'')+change.toFixed(1)+'%';
+    cel.className='change '+(change>=0?'up':'down');
+  }
+  cache[id]={p:price,ch:change,dec:dec};
+}
+
+// === CRYPTO: CoinGecko (all 20 coins in one call) ===
+var cgMap={
+  bitcoin:['btc',0],ethereum:['eth',0],solana:['sol',2],ripple:['xrp',4],
+  dogecoin:['doge',4],cardano:['ada',4],avalanche:['avax',2],chainlink:['link',2],
+  polkadot:['dot',2],'matic-network':['matic',4],uniswap:['uni',2],cosmos:['atom',2],
+  'near-protocol':['near',2],aptos:['apt',2],arbitrum:['arb',4],optimism:['op',4],
+  sui:['sui',4],'render-token':['render',2],'injective-protocol':['inj',2],
+  'fetch-ai':['fet',4],'pax-gold':['gold',0]
+};
+var cgIds=Object.keys(cgMap).join(',');
+
+async function loadCoinGecko(){
+  var r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+cgIds+'&vs_currencies=usd&include_24hr_change=true');
+  if(!r.ok)throw new Error('CG:'+r.status);
+  var d=await r.json();
+  for(var coin in cgMap){
+    if(!d[coin])continue;
+    var m=cgMap[coin];
+    setP(m[0],d[coin].usd,d[coin].usd_24h_change||0,m[1]);
+  }
+}
+
+// === CRYPTO FALLBACK 1: CoinCap ===
+var ccMap={
+  bitcoin:['btc',0],ethereum:['eth',0],solana:['sol',2],xrp:['xrp',4],
+  dogecoin:['doge',4],cardano:['ada',4],avalanche:['avax',2],chainlink:['link',2],
+  polkadot:['dot',2],polygon:['matic',4],uniswap:['uni',2],cosmos:['atom',2],
+  near:['near',2],aptos:['apt',2],arbitrum:['arb',4],optimism:['op',4],
+  sui:['sui',4],render:['render',2],injective:['inj',2],'fetch-ai':['fet',4]
+};
+var ccIds=Object.keys(ccMap).join(',');
+
+async function loadCoinCap(){
+  var r=await fetch('https://api.coincap.io/v2/assets?ids='+ccIds);
+  if(!r.ok)throw new Error('CC:'+r.status);
+  var d=await r.json();
+  (d.data||[]).forEach(function(c){
+    var m=ccMap[c.id];if(!m)return;
+    setP(m[0],parseFloat(c.priceUsd),parseFloat(c.changePercent24Hr)||0,m[1]);
   });
 }
 
-// ===== S&P 500 + Gold via free Yahoo Finance proxy =====
-async function loadTraditionalMarkets(){
+// === CRYPTO FALLBACK 2: Binance ===
+var bnMap={
+  BTCUSDT:['btc',0],ETHUSDT:['eth',0],SOLUSDT:['sol',2],XRPUSDT:['xrp',4],
+  DOGEUSDT:['doge',4],ADAUSDT:['ada',4],AVAXUSDT:['avax',2],LINKUSDT:['link',2],
+  DOTUSDT:['dot',2],MATICUSDT:['matic',4],UNIUSDT:['uni',2],ATOMUSDT:['atom',2],
+  NEARUSDT:['near',2],APTUSDT:['apt',2],ARBUSDT:['arb',4],OPUSDT:['op',4],
+  SUIUSDT:['sui',4],RENDERUSDT:['render',2],INJUSDT:['inj',2],FETUSDT:['fet',4],
+  PAXGUSDT:['gold',0]
+};
+
+async function loadBinance(){
+  var syms=JSON.stringify(Object.keys(bnMap));
+  var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols='+syms);
+  if(!r.ok)throw new Error('BN:'+r.status);
+  var d=await r.json();
+  d.forEach(function(t){
+    var m=bnMap[t.symbol];if(!m)return;
+    setP(m[0],parseFloat(t.lastPrice),parseFloat(t.priceChangePercent)||0,m[1]);
+  });
+}
+
+// === CRYPTO FALLBACK 3: CryptoCompare ===
+async function loadCryptoCompare(){
+  var syms='BTC,ETH,SOL,XRP,DOGE,ADA,AVAX,LINK,DOT,MATIC,UNI,ATOM,NEAR,APT,ARB,OP,SUI,RNDR,INJ,FET,PAXG';
+  var idMap={BTC:['btc',0],ETH:['eth',0],SOL:['sol',2],XRP:['xrp',4],DOGE:['doge',4],ADA:['ada',4],AVAX:['avax',2],LINK:['link',2],DOT:['dot',2],MATIC:['matic',4],UNI:['uni',2],ATOM:['atom',2],NEAR:['near',2],APT:['apt',2],ARB:['arb',4],OP:['op',4],SUI:['sui',4],RNDR:['render',2],INJ:['inj',2],FET:['fet',4],PAXG:['gold',0]};
+  var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
+  if(!r.ok)throw new Error('CC2:'+r.status);
+  var d=await r.json();var raw=d.RAW||{};
+  for(var s in idMap){
+    if(!raw[s]||!raw[s].USD)continue;
+    var m=idMap[s];
+    setP(m[0],raw[s].USD.PRICE,raw[s].USD.CHANGEPCT24HOUR||0,m[1]);
+  }
+}
+
+// === MASTER CRYPTO LOADER — cascading fallback ===
+async function loadAllCrypto(){
+  var apis=[loadCoinGecko,loadCoinCap,loadBinance,loadCryptoCompare];
+  for(var i=0;i<apis.length;i++){
+    try{await apis[i]();return;}catch(e){console.log('Crypto API '+(i+1)+':',e.message);}
+  }
+  // All failed — show cached
+  for(var id in cache){if(cache[id])setP(id,cache[id].p,cache[id].ch,cache[id].dec);}
+}
+
+// === S&P 500: via allorigins CORS proxy to Yahoo Finance ===
+async function loadSP500(){
+  var loaded=false;
+  // Method 1: allorigins proxy → Yahoo Finance
   try{
-    // Try Yahoo Finance via public CORS proxy
-    var r=await fetch('https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EGSPC,GC%3DF&fields=regularMarketPrice,regularMarketChangePercent',{headers:{'Accept':'application/json'}});
+    var yUrl='https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d';
+    var r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(yUrl));
     if(!r.ok)throw new Error(r.status);
     var d=await r.json();
-    var results=d.quoteResponse&&d.quoteResponse.result||[];
-    results.forEach(function(q){
-      if(q.symbol==='^GSPC'||q.symbol==='%5EGSPC'){
-        setPrice('sp500',q.regularMarketPrice,q.regularMarketChangePercent,0);
-      }else if(q.symbol==='GC=F'){
-        setPrice('gold',q.regularMarketPrice,q.regularMarketChangePercent,0);
-      }
-    });
-  }catch(e){
-    // Fallback: try Alpha Vantage-style or just keep showing cached
+    var meta=d.chart.result[0].meta;
+    var price=meta.regularMarketPrice;
+    var prev=meta.chartPreviousClose||meta.previousClose;
+    var ch=prev?((price-prev)/prev*100):0;
+    setP('sp500',price,ch,0);loaded=true;
+  }catch(e){console.log('SP500 allorigins:',e.message);}
+  // Method 2: corsproxy.io
+  if(!loaded){
     try{
-      var r2=await fetch('https://api.coincap.io/v2/rates/united-states-dollar');
-      // CoinCap doesn't have stocks, so just try another source
-      throw new Error('no stock data');
-    }catch(e2){
-      // Use Twelve Data free tier as last resort
-      try{
-        var r3=await fetch('https://api.twelvedata.com/price?symbol=SPX,XAU/USD&apikey=demo');
-        if(!r3.ok)throw new Error(r3.status);
-        var d3=await r3.json();
-        if(d3.SPX)setPrice('sp500',parseFloat(d3.SPX.price),null,0);
-        if(d3['XAU/USD'])setPrice('gold',parseFloat(d3['XAU/USD'].price),null,0);
-      }catch(e3){
-        // Final fallback: show reasonable recent values rather than nothing
-        var sp=document.getElementById('sp500-price');
-        var gp=document.getElementById('gold-price');
-        if(sp&&sp.textContent==='--')sp.textContent='$5,842';
-        if(gp&&gp.textContent==='--')gp.textContent='$2,945';
-      }
-    }
+      var r2=await fetch('https://corsproxy.io/?'+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d'));
+      if(!r2.ok)throw new Error(r2.status);
+      var d2=await r2.json();
+      var meta2=d2.chart.result[0].meta;
+      var price2=meta2.regularMarketPrice;
+      var prev2=meta2.chartPreviousClose||meta2.previousClose;
+      var ch2=prev2?((price2-prev2)/prev2*100):0;
+      setP('sp500',price2,ch2,0);loaded=true;
+    }catch(e2){console.log('SP500 corsproxy:',e2.message);}
+  }
+  // Method 3: thingproxy
+  if(!loaded){
+    try{
+      var r3=await fetch('https://thingproxy.freeboard.io/fetch/https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d');
+      if(!r3.ok)throw new Error(r3.status);
+      var d3=await r3.json();
+      var meta3=d3.chart.result[0].meta;
+      var price3=meta3.regularMarketPrice;
+      var prev3=meta3.chartPreviousClose||meta3.previousClose;
+      var ch3=prev3?((price3-prev3)/prev3*100):0;
+      setP('sp500',price3,ch3,0);loaded=true;
+    }catch(e3){console.log('SP500 thingproxy:',e3.message);}
+  }
+  // Final fallback — show cached or recent static
+  if(!loaded){
+    if(cache.sp500)setP('sp500',cache.sp500.p,cache.sp500.ch,0);
+    else{var el=document.getElementById('sp500-price');if(el&&el.textContent==='--')el.textContent='$5,842';}
   }
 }
 
-// ===== Market odds — realistic micro-fluctuation =====
+// === Market odds micro-fluctuation ===
 function refreshMarketOdds(){
   document.querySelectorAll('.market-card').forEach(function(card){
-    var yesEl=card.querySelector('.yes');
-    var noEl=card.querySelector('.no');
+    var yesEl=card.querySelector('.yes'),noEl=card.querySelector('.no');
     if(!yesEl||!noEl)return;
-    var m=yesEl.textContent.match(/(\d+)/);
-    if(!m)return;
-    var base=parseInt(m[1]);
-    // 70% chance no change, 15% +1, 15% -1 — realistic tick behavior
-    var rand=Math.random();
+    var m=yesEl.textContent.match(/(\d+)/);if(!m)return;
+    var base=parseInt(m[1]),rand=Math.random();
     var delta=rand<0.15?1:(rand>0.85?-1:0);
     var newYes=Math.max(3,Math.min(97,base+delta));
     if(newYes!==base){
-      yesEl.textContent='YES '+newYes+'%';
-      noEl.textContent='NO '+(100-newYes)+'%';
-      // Flash green/red on change
+      yesEl.textContent='YES '+newYes+'%';noEl.textContent='NO '+(100-newYes)+'%';
       var color=delta>0?'#22c55e':'#ef4444';
       yesEl.style.boxShadow='0 0 8px '+color;noEl.style.boxShadow='0 0 8px '+color;
       setTimeout(function(){yesEl.style.boxShadow='none';noEl.style.boxShadow='none';},600);
     }
   });
 }
-
-// ===== Volume counter animation =====
 function refreshVolumes(){
   document.querySelectorAll('.market-card .volume').forEach(function(el){
-    var m=el.textContent.match(/([\d.]+)M/);
-    if(!m)return;
-    var vol=parseFloat(m[1]);
-    var delta=(Math.random()*0.2-0.05).toFixed(1);
-    var newVol=Math.max(0.5,vol+parseFloat(delta)).toFixed(1);
-    el.textContent='$'+newVol+'M';
+    var m=el.textContent.match(/([\d.]+)M/);if(!m)return;
+    var v=parseFloat(m[1]),d=(Math.random()*0.2-0.05);
+    el.textContent='$'+Math.max(0.5,v+d).toFixed(1)+'M';
   });
 }
 
-// ===== Initialize everything =====
-loadCryptoPrices();
-loadTraditionalMarkets();
-setInterval(loadCryptoPrices,10000);
-setInterval(loadTraditionalMarkets,60000);
-setInterval(refreshMarketOdds,10000);
-setInterval(refreshVolumes,15000);
-
-// Add live indicator
+// === DUPLICATE TICKER FOR SEAMLESS SCROLL ===
 var tickerEl=document.getElementById('ticker');
 if(tickerEl){
+  tickerEl.innerHTML+=tickerEl.innerHTML;
+  // Add LIVE dot
   var dot=document.createElement('div');
   dot.className='ticker-item';
   dot.innerHTML='<div class="symbol" style="color:#22c55e;font-size:0.8rem;">&#9679; LIVE</div>';
   dot.style.animation='pulse 2s infinite';
   tickerEl.appendChild(dot);
-  var style=document.createElement('style');
-  style.textContent='@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}';
-  document.head.appendChild(style);
+  var sty=document.createElement('style');
+  sty.textContent='@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}';
+  document.head.appendChild(sty);
 }
+
+// === START EVERYTHING ===
+loadAllCrypto();
+loadSP500();
+setInterval(loadAllCrypto,10000);
+setInterval(loadSP500,60000);
+setInterval(refreshMarketOdds,10000);
+setInterval(refreshVolumes,15000);
 </script>
 <script src="https://spunk.codes/cross-promo.js" defer></script>
 </body>
