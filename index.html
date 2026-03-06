@@ -437,7 +437,22 @@ setInterval(refreshOdds,10000);
 setInterval(refreshVol,15000);
 </script>
 <script src="https://spunk.codes/cross-promo.js" defer></script>
-
+<script>
+window.shareMarkets=function(){var txt='Just found the best prediction market + crypto signal dashboard — Polymarket, Kalshi, and live crypto all in one place. Free. 13.markets via @SpunkArt13';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(txt),'_blank');};
+window.subscribeMarketsNL=function(){var em=document.getElementById('mkt-nl-email');if(!em||!em.value.includes('@'))return;var key='mkt_nl_'+em.value;if(localStorage.getItem(key))return;localStorage.setItem(key,'1');fetch('https://predict-network-ec767-default-rtdb.firebaseio.com/markets_newsletter.json',{method:'POST',body:JSON.stringify({email:em.value,t:Date.now()}),headers:{'Content-Type':'application/json'}}).catch(function(){});var msg=document.getElementById('mkt-nl-msg');if(msg)msg.style.display='block';em.value='';};
+</script>
+<div style="background:#0d0d14;border-top:1px solid #1a1a2f;border-bottom:1px solid #1a1a2f;padding:32px 24px;text-align:center">
+  <p style="color:#fff;font-size:1.1rem;font-weight:700;margin-bottom:8px">Get the signal before everyone else</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+    <button onclick="shareMarkets()" style="background:linear-gradient(135deg,#1da1f2,#0d8ecf);color:#fff;font-weight:700;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:.88rem">Share on X →</button>
+    <a href="https://kalshi.com/sign-up/?referral=6b723b42-d0c9-4421-9b4e-5af4b4c6c42c" target="_blank" rel="noopener sponsored" style="background:linear-gradient(135deg,#00d4ff,#0088bb);color:#000;font-weight:800;padding:10px 20px;border-radius:8px;font-size:.88rem;display:inline-block">Trade Kalshi →</a>
+  </div>
+  <div style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+    <input id="mkt-nl-email" type="email" placeholder="your@email.com" style="flex:1;background:#12121f;border:1px solid #1a1a2f;color:#e0e0e0;padding:10px 14px;border-radius:8px;font-size:.88rem;font-family:inherit">
+    <button onclick="subscribeMarketsNL()" style="background:linear-gradient(135deg,#00d4ff,#0088bb);color:#000;font-weight:800;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;white-space:nowrap">Get Alerts</button>
+  </div>
+  <p id="mkt-nl-msg" style="color:#22c55e;font-size:.8rem;margin-top:8px;display:none">You'll get market alerts before the crowd.</p>
+</div>
 <!-- Tip Spunk Modal -->
 <div class="tip-modal-overlay" id="tip-spunk-modal" onclick="if(event.target===this)closeTipModal()">
   <div class="tip-modal">
